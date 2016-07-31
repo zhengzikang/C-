@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+struct user{
+	char name[10];
+	int win,lose,tide,netwin;
+}u;
+int main()
+{
+	int com,user;                                              
+	int m,i;                                                      
+	int win,lose,netwin;                                
+	void judge(int *pwin,int *plose,int *pnetwin);   
+	struct user u[50];                                          
+	struct user input_user();                                  
+	void sort_user(struct user u[],int n);                     
+	void output_user(struct user u[],int n);                 
+	printf("欢迎参加剪刀石头布竞赛\n");
+	printf("请选择游戏模式：1.练习模式    2.对战模式(九局五胜)\n",i);
+	scanf("%d",&i);
+	if(i==1)
+	{
+		printf("\n");
+		judge(&win,&lose,&netwin);  }            
+		
+	else
+	{
+		printf("请输入玩家数量：\n");
+		scanf("%d",&m);
+		for(i=0;i<m;i++){
+			printf("\n请输入第%d位玩家的昵称：\n",i+1);
+			u[i]=input_user();
+			judge(&win,&lose,&netwin);
+			u[i].win=win;u[i].lose=lose;u[i].netwin=netwin;          
+		}sort_user(u,m);                                                         
+		printf("\n"); 
+		printf("\n----------------------------------排行榜-----------------------------------\n");
+		output_user(u,m);                                                         
+	}
+
+}
+struct user input_user()
+{
+	struct user u;
+	printf("昵称:");
+	scanf("%s",&u.name);
+	return u;
+};
+void judge(int *pwin,int *plose,int *pnetwin)
+{
+	int lose=0,win=0,netwin=0;
+	int user,com;
+	do{
+		printf("请出(1.剪刀、2.石头、3.布):");
+		scanf("%d",&user);
+		srand((unsigned)time(NULL));
+		com=rand()%3+1;
+		printf("电脑出%s\n",com==1?"剪刀":com==2?"石头":"布");
+		switch(com-user)
+		{
+			case 0:
+			break;
+			case 1:
+			case -2:
+			lose=lose+1;
+			break;
+			case -1: 
+			case 2:
+			win=win+1;
+			break;
+			default:printf("Error!!!\n");break;
+		}
+	} while(!(win==5||lose==5));
+	netwin=win-lose;
+	
+	if(netwin>0)
+	printf("you win!\n");
+		else if (netwin<0)
+	printf("you lose!\n");
+	else printf("Tide!\n");
+	*pwin=win;*plose=lose;*pnetwin=netwin;
+}
+void sort_user(struct user u[],int m)
+{
+	int i,j,index;
+	struct user temp;
+	for(i=0;i<m-1;i++)
+	{
+		index=i;
+		for(j=1;j<m;j++) if(u[j].netwin>u[index].netwin) index=j;
+		temp=u[i];u[i]=u[index];u[index]=temp;
+	}
+}
+void output_user(struct user u[],int m)
+{
+	int i;
+	printf("名称  赢 输 净赢\n");
+	for(i=0;i<m;i++)
+	{
+		printf("%-7s%-3d%-3d%-3d\n",u[i].name,u[i].win,u[i].lose,u[i].netwin);
+	}
+}
